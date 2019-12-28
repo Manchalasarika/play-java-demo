@@ -1,24 +1,23 @@
 package controllers;
-
 import play.mvc.Controller;
 import play.mvc.Result;
-import utils.AtomicCounter;
-import utils.Counter;
+import utility.AtomicCounter;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 @Singleton
 public class CountController extends Controller {
-    private final Counter counter;
 
+    private AtomicCounter counter;
     @Inject
-    public CountController(Counter counter) {
-        this.counter = counter;
+    public CountController(AtomicCounter counter){
+         this.counter = counter;
+    }
+    public Result getCurrentCount() {
+
+        return ok("count: "+counter.getCount());
     }
 
-    public Result count() {
-        return ok(Integer.toString(counter.nextCount()));
-    }
 
 }

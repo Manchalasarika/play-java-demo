@@ -4,18 +4,11 @@
 
 # An example controller showing a sample home page
 GET     /                           controllers.HomeController.index
-GET     /whoami                     controllers.HomeController.whoami
-
-GET     /hello                      controllers.HelloController.hello
-GET     /hello/:name                controllers.HelloController.helloWithName(name: String)
-GET     /hellos/:name               controllers.HelloController.hellosWithCount(name: String, count: Integer)
-POST    /greetings                  controllers.HelloController.greetings()
-
-GET     /count                      controllers.CountController.count
-
-GET     /answer                     controllers.AsyncController.answer()
-GET     /action                     controllers.AsyncController.action()
-
-
+GET     /hello                      controllers.HelloController.doSomething()
+GET     /hello/:name                controllers.HelloController.helloUser(name : String)
+POST    /hello/details              controllers.HelloController.helloUserWithDetails()
+POST    /hello/users                controllers.HelloController.helloUserMap()
+GET     /hello/users/:id            controllers.HelloController.helloUserMapDetails(id : String)
+GET     /counts                     controllers.CountController.getCurrentCount
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)

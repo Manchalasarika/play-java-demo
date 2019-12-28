@@ -1,50 +1,79 @@
 package controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import play.mvc.*;
+import play.mvc.Controller;
+import play.mvc.Result;
 
-/**
- * This controller contains an action to handle HTTP requests
- * to the application's home page.
- */
+import java.util.HashMap;
+import java.util.Map;
+
 public class HelloController extends Controller {
+    Map<Integer,String> map = new HashMap<>();
+    public Result doSomething() {
+        String msg = "hello controller";
+        return ok(msg);
 
-    /**
-     * An action that renders an HTML page with a welcome message.
-     * The configuration in the <code>routes</code> file means that
-     * this method will be called when the application receives a
-     * <code>GET</code> request with a path of <code>/</code>.
-     */
-    public Result hello() {
-        return ok("Hello There!");
     }
 
-    public Result helloWithName(String name) {
-        return ok("Hello There, " + name + "!");
+    public Result helloUser(String uname) {
+        String msg = "hello " + uname;
+        return ok(msg);
     }
 
-    public Result hellosWithCount(String name, Integer count) {
-        if (count == null) {
-            count = 0;
-        }
-        StringBuilder message = new StringBuilder();
-        for (int i = 0; i < count; i++) {
-            message.append("Hello, ").append(name).append("!\n");
-        }
-        return ok(message.toString());
-    }
-
-    public Result greetings() {
+    public Result helloUserWithDetails() {
         JsonNode requestJson = request().body().asJson();
-        if (!requestJson.has("first_name")) {
-            return badRequest("Must provide first_name");
+        String firstName = null;
+        String lastName = null;
+        if (requestJson.has("first_name")) {
+            firstName = requestJson.get("first_name").asText();
         }
-        if (!requestJson.has("last_name")) {
-            return badRequest("Must provide last_name");
+        if (requestJson.has("last_name")) {
+            lastName = requestJson.get("last_name").asText();
         }
-        String firstName = requestJson.get("first_name").asText();
-        String lastName = requestJson.get("last_name").asText();
-        String message = "Welcome, " + firstName + " " + lastName + "!";
-        return ok(message);
+        if (firstName != null && lastName != null) {
+            String msg = "hello " + firstName + " " + lastName;
+            return ok(msg);
+        }
+        return badRequest("Provide both first_name and last_name");
+    }
+    public Result helloUserMap(){
+        JsonNode requestJson = request().body().asJson();
+        String userName = null;
+        int userId = 0;
+        String msg = null;
+
+
+        if (requestJson.has("user_name")) {
+            userName = requestJson.get("user_name").asText();
+        }
+        if (requestJson.has("user_id")) {
+            userId = requestJson.get("user_id").asInt();
+        }
+        if (userName != null && userId != 0) {
+            map.put(userId , userName);
+
+            for (Integer id: map.keySet()){
+                String key = id.toString();
+                String value = map.get(id).toString();
+                msg = "Your name is "+value+" and your id is "+key;
+                return ok(msg);
+            }
+
+        }
+        return badRequest("Provide user_name and user_id");
+    }
+
+    public Result helloUserMapDetails(String userId){
+       int uid = Integer.parseInt(userId);
+        String msg = null;
+        for (Integer id: map.keySet()) {
+            if (id == uid) {
+                String key = id.toString();
+                String value = map.get(id).toString();
+                msg = "Your name is " + value + " and your id is " + key;
+                return ok(msg);
+            }
+        }
+        return badRequest("UserId doesn't exist");
     }
 }
